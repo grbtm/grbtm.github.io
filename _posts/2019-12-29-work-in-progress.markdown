@@ -5,8 +5,11 @@ date:   2019-12-29 17:36:30 +0100
 categories: gensim doc2vec
 ---
 
-I had the following problem:
+In this blog post I'm describing one approach on how to get a doc2vec similarity
+model off the ground quickly and how to apply document similarity queries between
+new incoming documents.
 
+The setup is roughly the following:
 - build a \'document similarity query engine\', which can take a set of unseen reference
 documents and take another set of unseen documents which sould be queried against
 the former
@@ -43,9 +46,13 @@ and on the other have a large enough variance of width of topics, so that it can
 a broad amount of documents in its vector space.
 
 Since I was considering mainly news articles (and some blog posts), I was looking for a
-large dataset of freely available news articles.
+large dataset of freely available news articles. The [gensim-data][gensim-data] API
+is generally a good starting point when looking for publicly available
+NLP datasets and also models.
 
-If you have a kaggle account, you can download a 640 MB large dataset of 143,000 articles from 15 American publications,
+But in my case I found a great news article dataset on kaggle. If you have a
+kaggle account, you can download a 640 MB large dataset of 143,000 articles from
+15 American publications,
 submitted by Andrew Thompson: [kaggle link][little-dataset]. (Or get even the larger, 1.5GB dataset with 204,135 articles from 18 American publications from [components.one][big-dataset])
 
 Once we have downloaded the kaggle dataset, we'll extract and concatenate the article
@@ -73,7 +80,7 @@ Index(['id', 'title', 'publication', 'author', 'date', 'year', 'month', 'url', '
 {% endhighlight %}
 
 For now we are only interested in the article title and content, so we can disregard the other columns.
-Additionally we will remove the news source at the end of some headlines.
+Additionally we have to do some basic data cleaning...
 
 {% highlight python %}
 # For our current analysis we don't need fake news ;)
@@ -88,6 +95,9 @@ df = df.dropna()
 
 # Concatenate article title and content in a new column
 df['concatenated'] = df['title'] + ' ' + df['content']
+
+# Remove newline characters
+df['concatenated'] = df['concatenated'].replace(r'\n', ' ', regex=True)
 
 # Write the 'concatenated' column into a text file with one document per line
 # The textfile will be around 620 MB
@@ -109,8 +119,8 @@ slightly adjust it according to our needs:
 {% highlight python %}
 import smart_open
 
-def read_corpus(fname, tokens_only=False):
-    with smart_open.open(fname) as f:
+def read_corpus(fname, tokens_only=False, encoding=None):
+    with smart_open.open(fname, encoding=encoding) as f:
         for i, line in enumerate(f):
             tokens = gensim.utils.simple_preprocess(line)
             if tokens_only:
@@ -119,12 +129,13 @@ def read_corpus(fname, tokens_only=False):
                 # For training data, add tags
                 yield gensim.models.doc2vec.TaggedDocument(tokens, [i])
 
+# this will read the corpus into memory
 train_corpus = list(read_corpus('/path/to/filename_of_output.txt'))
 {% endhighlight %}
 
 Consider to adjust your preprocessing with a custom function, based on your specific corpus.
 
-#### 2.2 Train models and evaluate
+#### 2.2 Train models
 We will train a few Doc2Vec models to compare their performances and pick the best performing
 one for our use case. Doc2Vec offers two different modes to train the paragraph vector,
 while both are implemented in a shallow neural network with one hidden and one projection
@@ -194,29 +205,168 @@ for model in simple_models:
 models_by_name = OrderedDict((str(model), model) for model in simple_models)
 {% endhighlight %}
 
-### 3. Project new unseen reference documents into the models vector space
+#### 2.3 Save models
 
+{% highlight python %}
+import datetime
+
+now = datetime.datetime.now()
+
+# Parse the model name to an appropriate file name format
+replace_tuples = ('(','_'), (')','_'), (',','_'), (' ','_'), ('/','-')
+
+# Write all models to disk
+for model in simple_models:
+
+    model_name = str(model)
+
+    for r in replace_tuples:
+        model_name = model_name.replace(*r)
+
+    model_filepath = f'/path/to/models/{model_name}-{now.hour}{now.minute}'
+
+    print(f'Saving model {str(model)} to: \n {model_filepath}')
+    model.save(model_filepath)
+
+{% endhighlight %}
+
+#### 2.4 Evaluate models
+The first basic sanity check for the freshly trained models also follows the
+approach of gensim's Doc2Vec [tutorial][gensim-doc2vec-tutorial]:
+we will use the models to infer new vectors from the training corpus and  
+examine how often they are predicted as most similar to itself.
+
+{% highlight python %}
+import random
+import collections
+
+# Pick a random subset of documents from the training corpus to speed up testing
+random_idxs = [random.randint(0, len(train_corpus)) for i in range(1000)]
+
+
+for model in simple_models:
+
+    ranks = []
+
+    for idx in random_idxs:
+
+        inferred_vector = model.infer_vector(train_corpus[idx].words)
+        sims = model.docvecs.most_similar([inferred_vector], topn=3)
+        rank = [docid for docid, sim in sims]
+
+        if idx in rank:
+            rank = [docid for docid, sim in sims].index(idx)
+
+        else:
+            rank = 'not in top 3'
+
+        ranks.append(rank)
+
+
+    counter = collections.Counter(ranks)
+
+    print(f'Model: {str(model)} \n counter: {counter} \n')
+
+{% endhighlight %}
+
+And we see:
+
+{% highlight python %}
+Model: Doc2Vec(dbow,d20,n5,mc5,s0.001,t4)
+counter: Counter({0: 985, 99: 11, 1: 4})
+
+Model: Doc2Vec(dbow+w,d20,n5,w5,mc5,s0.001,t4)
+counter: Counter({0: 972, 99: 14, 1: 14})
+
+Model: Doc2Vec(dbow,d40,n5,mc5,s0.001,t4)
+counter: Counter({0: 984, 99: 11, 1: 4, 2: 1})
+
+Model: Doc2Vec(dm/m,d20,n5,w5,mc5,s0.001,t4)
+counter: Counter({0: 877, 99: 62, 1: 48, 2: 13})
+
+Model: Doc2Vec(dm/m,d40,n5,w5,mc5,s0.001,t4)
+counter: Counter({0: 976, 99: 14, 1: 9, 2: 1})
+
+Model: Doc2Vec(dm/m,d20,n5,w10,mc5,s0.001,t4)
+counter: Counter({0: 827, 99: 86, 1: 60, 2: 27})
+
+Model: Doc2Vec(dm/c,d20,n5,w5,mc5,s0.001,t4)
+counter: Counter({0: 981, 99: 12, 1: 6, 2: 1})
+
+{% endhighlight %}
+
+### 3. Project new unseen reference documents into the models vector space
+Based on SO [hint][SO-subset-vectors] from Gordon Mohr, we'll use keyedvectors
+class of gensim to store the projected reference documents' vectors.
+
+{% highlight python %}
+from gensim.models.keyedvectors import WordEmbeddingsKeyedVectors
+
+# The reference
+reference = list(read_corpus(lee_train_file,
+                             encoding="iso-8859-1",
+                             tokens_only=True))
+
+# Infer vectors for reference items
+inferred_vectors = []
+
+for doc in reference:
+    vec = model.infer_vector(doc)
+    inferred_vectors.append(vec)
+
+# Construct subset of vectors
+subset_vectors = WordEmbeddingsKeyedVectors(vector_size=model.vector_size)
+labels = list(range(len(inferred_vectors)))
+
+subset_vectors.add(entities=labels , weights=inferred_vectors)   
+{% endhighlight %}
 
 ### 4. Perform similarity queries with unseen documents against the projected reference documents
 
-For further discussions on a feasible production setup with even larger and more
-frequently changing corpora, see the useful explanations by Gordon Mohr: ADD LINK
-
-<!-- Where `YEAR` is a four-digit number, `MONTH` and `DAY` are both two-digit numbers, and `MARKUP` is the file extension representing the format used in the file. After that, include the necessary front matter. Take a look at the source for this post to get an idea about how it works.
-
-Jekyll also offers powerful support for code snippets:
-
 {% highlight python %}
-print('Hi, Tom')
-# prints 'Hi, Tom' to STDOUT.
+for model in simple_models:
+    print('##############################################')
+    print('Now evaluating: ' + str(model))
+
+    # The reference
+    reference = list(read_corpus(lee_train_file,
+                                 encoding="iso-8859-1",
+                                 tokens_only=True))
+
+    # infer vecs for reference items
+    inferred_vectors = []
+
+    for doc in reference:
+        vec = model.infer_vector(doc)
+        inferred_vectors.append(vec)
+
+    # Construct subset of vecs
+    vector_size = model.vector_size
+
+    subset_vectors = WordEmbeddingsKeyedVectors(vector_size=vector_size)
+    labels = list(range(len(inferred_vectors)))
+    subset_vectors.add(entities=labels, weights=inferred_vectors)   
+
+    # Test files are from Lee as well
+    test_corpus = list(read_corpus(lee_test_file,
+                                   encoding="iso-8859-1",
+                                   tokens_only=True))
+
+    doc_id = 10 # fix a random document id to compare it across all models
+    compared_doc = test_corpus[doc_id]
+    inferred_vector = model.infer_vector(compared_doc)
+    sims = subset_vectors.most_similar([inferred_vector], topn=3)
+
+    print('compared document: ' + ' '.join(compared_doc))
+    print()
+    for idx, score in sims[:1]:
+        print(f'MOST SIMILAR {idx}: w score {score}:')
+        print(' '.join(reference[int(idx)]))
+
 {% endhighlight %}
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
-
-[jekyll-docs]: https://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/ -->
-
+[gensim-data]: https://github.com/RaRe-Technologies/gensim-data
+[SO-subset-vectors]: https://stackoverflow.com/questions/56130065/how-to-perform-efficient-queries-with-gensim-doc2vec
 [gensim-doc2vec-tutorial]: https://radimrehurek.com/gensim/auto_examples/tutorials/run_doc2vec_lee.html#sphx-glr-download-auto-examples-tutorials-run-doc2vec-lee-py
 [big-dataset]: https://components.one/datasets/all-the-news-articles-dataset/
 [little-dataset]: https://www.kaggle.com/snapcrack/all-the-news/data
