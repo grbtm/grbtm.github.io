@@ -7,7 +7,8 @@ categories: gensim doc2vec
 
 In this blog post I'm describing one approach on how to get a doc2vec similarity
 model off the ground quickly and how to apply document similarity queries between
-new incoming documents.
+new incoming documents. (Keywords to add: using unsupervised learning without the need
+of labelled data)
 
 The setup is roughly the following:
 - build a \'document similarity query engine\', which can take a set of unseen reference
@@ -98,6 +99,7 @@ df['concatenated'] = df['title'] + ' ' + df['content']
 
 # Remove newline characters
 df['concatenated'] = df['concatenated'].replace(r'\n', ' ', regex=True)
+df['concatenated'] = df['concatenated'].replace(r'\^M', ' ', regex=True)
 
 # Write the 'concatenated' column into a text file with one document per line
 # The textfile will be around 620 MB
@@ -107,26 +109,30 @@ with open('/path/to/filename_of_output.txt', 'w') as f:
 
 {% endhighlight %}
 
-This returns a text document with about 120k articles and headlines, each
+This returns a text document with about 120k articles, each
 represented as one string in one line of the text document.
 
 ### 2. Train doc2vec models
 
 #### 2.1 Read and preprocess the corpus
-For the reading of the corpus we follow gensim's [documentation][gensim-doc2vec-tutorial] on `doc2vec` and
-slightly adjust it according to our needs:
-
+To read the corpus from disk we use a function which uses gensim simple_preprocess
+method to tokenize the documents. For the training data we put the tokenized
+documents in a `doc2vec` `TaggedDocument` class wrapper to store it along with a
+tag, while for prediction purposes, we return just tokenized version of a
+document.
 {% highlight python %}
-import smart_open
+def read_corpus(fname, tokens_only=False, encoding=None
 
-def read_corpus(fname, tokens_only=False, encoding=None):
-    with smart_open.open(fname, encoding=encoding) as f:
+    with open(fname, encoding=encoding, newline='\n') as f:
+
         for i, line in enumerate(f):
+
             tokens = gensim.utils.simple_preprocess(line)
+
             if tokens_only:
                 yield tokens
+
             else:
-                # For training data, add tags
                 yield gensim.models.doc2vec.TaggedDocument(tokens, [i])
 
 # this will read the corpus into memory
@@ -180,12 +186,12 @@ simple_models = [
     Doc2Vec(dm=0, vector_size=40, **common_kwargs),
 
     # PV-DM w/ averaging of context word vectors (default dm_concat=0)
-    # and 20 dimensions
-    Doc2Vec(dm=1, vector_size=20, **common_kwargs),
+    # 20 dimensions and a sliding window of 5 words before and after (default)
+    Doc2Vec(dm=1, vector_size=20, window=5, **common_kwargs),
 
     # PV-DM w/ averaging of context word vectors (default dm_concat=0)
     # and 40 dimensions
-    Doc2Vec(dm=1, vector_size=40, **common_kwargs),
+    Doc2Vec(dm=1, vector_size=40, window=5, **common_kwargs),
 
     # PV-DM w/ averaging of context word vectors (default dm_concat=0);
     # a higher starting alpha may improve CBOW/PV-DM modes;
@@ -193,7 +199,6 @@ simple_models = [
     Doc2Vec(dm=1, vector_size=20, window=10, alpha=0.05, **common_kwargs),
 
     # PV-DM w/ concatenation of context word vectors - big, slow, experimental
-    # window=5 (both sides) approx. paper's apparent 10-word total window size
     Doc2Vec(dm=1, vector_size=20, dm_concat=1, window=5, **common_kwargs)
 
 ]
@@ -233,8 +238,9 @@ for model in simple_models:
 #### 2.4 Evaluate models
 The first basic sanity check for the freshly trained models also follows the
 approach of gensim's Doc2Vec [tutorial][gensim-doc2vec-tutorial]:
-we will use the models to infer new vectors from the training corpus and  
-examine how often they are predicted as most similar to itself.
+we use the models to infer new vectors from the training corpus and  
+examine how often they are predicted as most similar to its own representation
+as part of the trained paragraph vectors from the training corpus.
 
 {% highlight python %}
 import random
@@ -250,7 +256,13 @@ for model in simple_models:
 
     for idx in random_idxs:
 
+        # The infer_vector method takes a tokenized document (a list of strings)
+        # and projects it into the model's vector space
         inferred_vector = model.infer_vector(train_corpus[idx].words)
+
+        # The most_similar method of model.docvecs returns the most similar
+        # paragraph vectors learned from the training data with respect to
+        # submitted inferred_vector
         sims = model.docvecs.most_similar([inferred_vector], topn=3)
         rank = [docid for docid, sim in sims]
 
@@ -295,14 +307,34 @@ counter: Counter({0: 981, 99: 12, 1: 6, 2: 1})
 
 {% endhighlight %}
 
-### 3. Project new unseen reference documents into the models vector space
-Based on SO [hint][SO-subset-vectors] from Gordon Mohr, we'll use keyedvectors
-class of gensim to store the projected reference documents' vectors.
+The first basic assessment reveals that:
+  - more dimensions for a PV-DBOW model have no impact on this performance measure
+  - the worst performing model with 82.7% is PV-DM w/ averaging of context word vectors + higher starting alpha + large context window
+  - the first overall assessment for ... is good
 
+So we can continue with further testing...
+
+### 3. Project new unseen reference documents into the models vector space
+Gensim's `doc2vec` model has an out-of-the-box storage of
+all paragraph vectors from the training corpus (`model.docvecs`). But we need
+to find a way to store the projected paragraph vectors from new documents.
+
+Based on a SO [hint][SO-subset-vectors] from Gordon Mohr, we'll use the
+`WordEmbeddingsKeyedVectors` class of gensim to store the inferred paragraph vectors of
+new unseen reference documents. Although that class was written for
+word vectors in mind, it can be used as a data structure for paragraph vectors,
+since the relevant `most_similar` method calculates a distance between two vectors
+based on [cosine similarity][cosine-similarity] - it doesn't matter in this
+regard whether the vectors represent word embeddings or paragraphs, as long as
+they live in the same vector space.
+
+We'll use gensim's built-in [small Lee corpus][small-lee-corpus] as a set of
+new unseen documents:
 {% highlight python %}
 from gensim.models.keyedvectors import WordEmbeddingsKeyedVectors
 
-# The reference
+# These are the new unseen documents
+
 reference = list(read_corpus(lee_train_file,
                              encoding="iso-8859-1",
                              tokens_only=True))
@@ -322,6 +354,10 @@ subset_vectors.add(entities=labels , weights=inferred_vectors)
 {% endhighlight %}
 
 ### 4. Perform similarity queries with unseen documents against the projected reference documents
+Finally, we will take a set of new documents and compare these against the set
+of reference documents, which we stored in section 3. in the `WordEmbeddingsKeyedVectors`
+class. This will at the same time function as a visual evaluation on how
+meaningful the models similarity predictions appear to us.
 
 {% highlight python %}
 for model in simple_models:
@@ -365,6 +401,8 @@ for model in simple_models:
 
 {% endhighlight %}
 
+[cosine-similarity]: https://en.wikipedia.org/wiki/Cosine_similarity
+[small-lee-corpus]: https://hekyll.services.adelaide.edu.au/dspace/bitstream/2440/28910/1/hdl_28910.pdf
 [gensim-data]: https://github.com/RaRe-Technologies/gensim-data
 [SO-subset-vectors]: https://stackoverflow.com/questions/56130065/how-to-perform-efficient-queries-with-gensim-doc2vec
 [gensim-doc2vec-tutorial]: https://radimrehurek.com/gensim/auto_examples/tutorials/run_doc2vec_lee.html#sphx-glr-download-auto-examples-tutorials-run-doc2vec-lee-py
