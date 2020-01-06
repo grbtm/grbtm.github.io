@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Kick-start gensim doc2vec similarity queries between unseen documents"
-date:   2019-12-29 17:36:30 +0100
+date:   2020-01-06 10:36:30 +0100
 categories: gensim doc2vec
 ---
 
@@ -35,7 +35,7 @@ word embeddings to kick-start a `doc2vec` (PV-DM) model, but more on that in a b
 2. The gensim `doc2vec` implementation is currently **not designed to perform similarity queries against
 unknown documents out-of-the-box**. To be clear: you can take any new document
 and query it for similarity against the documents used for training, but you can't
-query it against a set of unknown document.
+query it against a set of unknown documents.
 
 So, what I will show here is how to:
   1. Get a publicly available data set
@@ -124,11 +124,11 @@ represented as one string in one line of the text document.
 ### 2. Train doc2vec models
 
 #### 2.1 Read and preprocess the corpus
-To read the corpus from disk we use a function which uses gensim's `simple_preprocess`
-method to tokenize the documents. For training data we put the tokenized
-documents in a `doc2vec` `TaggedDocument` class wrapper to store it along with a
-tag. For prediction purposes, we return just a tokenized version of the
-document.
+To read the corpus from disk - and thus go easy on memory consumption - we use
+a python generator which utilizes gensim's `simple_preprocess` method to
+tokenize the documents. For training data we put the tokenized documents in a
+`doc2vec` `TaggedDocument` class wrapper to store it along with a tag.
+For prediction purposes, we return just a tokenized version of the document.
 {% highlight python %}
 def read_corpus(fname, tokens_only=False, encoding=(None):
 
@@ -145,13 +145,26 @@ def read_corpus(fname, tokens_only=False, encoding=(None):
             else:
 
                 yield gensim.models.doc2vec.TaggedDocument(tokens, [i])
-
-# This will read the corpus into memory !around 6GB!
-train_corpus = list(read_corpus('/path/to/filename_of_output.txt'))
 {% endhighlight %}
 
 Consider adjusting your preprocessing with a custom function based on your specific corpus.
 
+For model training later we will need an iterator which can be re-started,
+therefore the above generator isn't sufficient on its own. We'll wrap it in a class
+which returns a fresh generator every time its `__iter__` method is called:
+{% highlight python %}
+class MyCorpus(object):
+
+  def __init__(self, path, tokens_only=False, encoding=None):
+    self.path = path
+    self.tokens_only = tokens_only
+    self.encoding = encoding
+
+  def __iter__(self):
+    return read_corpus(self.path,
+                       tokens_only=self.tokens_only,
+                       encoding=self.encoding)
+{% endhighlight %}
 #### 2.2 Train models
 We will train a few `doc2vec` models to compare their performances and pick the one that performs best for our use case. `doc2vec` offers two different modes to train the paragraph vector. Both are implemented in a shallow neural network with one hidden and one projection
 layer. For a nice introductory tutorial on `doc2vec`, see the already stated [documentation][gensim-doc2vec-tutorial].
@@ -180,6 +193,9 @@ common_kwargs = dict(
     min_count=5, # the minimum nr of occurrences of a word to be considered
     workers=multiprocessing.cpu_count(),
 )
+
+# See section 1
+corpus_path = '/path/to/filename_of_output.txt'
 
 models = [
 
@@ -214,7 +230,7 @@ for model in models:
 
     # Constructs a dictionary of all unique words in corpus
     # and their respective nr of occurrences
-    model.build_vocab(train_corpus)
+    model.build_vocab(MyCorpus(path=corpus_path))
 
     print(f"{str(model)} initialized.")
 
@@ -232,7 +248,7 @@ for model in models:
     print(f"Training {str(model)...}")
 
     start_time = time.perf_counter()
-    model.train(train_corpus,
+    model.train(MyCorpus(path=corpus_path),
                 total_examples=model.corpus_count,
                 epochs=model.epochs)
     end_time = time.perf_counter()
@@ -392,13 +408,15 @@ new unseen documents:
 from gensim.models.keyedvectors import WordEmbeddingsKeyedVectors
 
 # These are the new unseen documents that we want to use as reference docs
-# We are using the same read_corpus() and thus same preprocessing function which
+# We are using the same MyCorpus class and thus same preprocessing function which
 # is important for consistency
 test_data_dir = os.path.join(gensim.__path__[0], 'test', 'test_data')
 lee_corpus = os.path.join(test_data_dir, 'lee_background.cor')
-reference = list(read_corpus(lee_corpus,
-                             encoding="iso-8859-1",
-                             tokens_only=True))
+
+# It's a small corpus, so we can load it into memory
+reference = list(MyCorpus(path=lee_corpus,
+                          tokens_only=True,
+                          encoding="iso-8859-1"))
 
 # Infer vectors for reference items
 inferred_vectors = []
@@ -436,15 +454,15 @@ with gensim.
 import pprint
 
 # The reference documents to be queried against (same as in section 3)
-reference = list(read_corpus(lee_corpus,
-                             encoding="iso-8859-1",
-                             tokens_only=True))
+reference = list(MyCorpus(path=lee_corpus,
+                          tokens_only=True,
+                          encoding="iso-8859-1"))
 
-# Test files are another set of 50 docs from Lee as well
+# Test files are another set of 50 different docs from Lee as well
 lee_50 = os.path.join(test_data_dir, 'lee.cor')
-test_corpus = list(read_corpus(lee_50,
-                               encoding="iso-8859-1",
-                               tokens_only=True))
+test_corpus = list(MyCorpus(path=lee_50,
+                            tokens_only=True,
+                            encoding="iso-8859-1"))
 
 
 # Choose one random sample from test files to comare across all models
