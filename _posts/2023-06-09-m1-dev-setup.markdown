@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "How to Set Up a Dev Environment on a MacBook Pro M1"
+title: "How to Set Up a Dev Environment on a MacBook Pro M1 in 2023"
 date: 2023-06-09 16:00:00 +0100
 categories: dev_setup
 ---
