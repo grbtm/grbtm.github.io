@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "How to Set Up a Dev Environment on a MacBook Pro M1"
-date: 2023-09-06 17:00:00 +0100
+date: 2023-06-00 17:00:00 +0100
 categories: dev_setup
 ---
 
@@ -30,7 +30,7 @@ Vim is already pre-installed, works for me!
 ### SSH keys
 My understanding is that it's considered best practice to generate new SSH keys for a new machine as opposed to copying the  SSH keys from your old machine. This way the private SSH keys don't have to leave the respective machine and are not flying around on old devices and being forgotten about. [To generate a new key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key) follow the prompts and make sure to enter a passphrase:
 ```shell
-ssh-keygen -t ed25519 
+ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 For convenience I also recommend to use the ssh-agent to manage your keys securely so that you don't have to type the passphrase everytime you use the keys: see [Adding your SSH key to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent)
 
