@@ -45,25 +45,25 @@ A great package manager for macOS:
  ```
  After the installation follow the suggested next steps to add Homebrew to your PATH.
  
- ### Rosetta 2
+### Rosetta 2
  An app that works in the background and enables you to run apps built for Intel Macs  on an Apple silicon Mac (`arm64`). Many apps already support Apple silicon processors, but there's still software out there (especially older versions of apps) that doesn't run natively on Apple silicon. It's also a recommendation to install Rosetta 2 before installing Docker Desktop.
  To install:
  ```
  softwareupdate --install-rosetta
   ```
  
- ### Note-taking: Obsidian
+### Note-taking: Obsidian
 Great note-taking app for plain text Markdown files:
  ```
 brew install --cask obsidian
  ```
  
- ### Htop
+### Htop
   ```
   brew install htop
    ```
  
- ### tmux
+### tmux
  A great terminal multiplexer that let's you run multiple terminal sessions in a single window (as well as detach and re-attach to sessions) :
  ```
  brew install tmux
