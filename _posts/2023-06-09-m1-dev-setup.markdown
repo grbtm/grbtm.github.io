@@ -35,9 +35,6 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 For convenience I also recommend to use the ssh-agent to manage your keys securely so that you don't have to type the passphrase everytime you use the keys: see [Adding your SSH key to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent)
 
-### IDE: VS Code
-To install VS Code download it from: `https://code.visualstudio.com/Download` 
-After installing VS Code choose the Python extension via Extensions in the sidebar and searching for 'Python' in the Marketplace. It will also ask you to install macOS Command Line Developer Tools.
 
 ### Homebrew
 A great package manager for macOS:
@@ -71,6 +68,10 @@ brew install tmux
 ```
  
 ### Python Development
+#### IDE: VS Code
+To install VS Code download it from: `https://code.visualstudio.com/Download` 
+After installing VS Code choose the Python extension via Extensions in the sidebar and search for 'Python' in the Marketplace. It will also ask you to install macOS Command Line Developer Tools if you haven't done already.
+
 #### Pyenv
 To manage multiple Python versions, install `pyenv`:
 ```
