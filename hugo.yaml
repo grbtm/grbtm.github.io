@@ -1,0 +1,63 @@
+baseURL: https://grbtm.github.io/
+languageCode: en-us
+title: "grbtm's blog"
+theme: ["PaperMod"]
+
+enableRobotsTXT: false
+
+params:
+  env: production # Enable Social-Metadata and SEO
+  
+  ShowRssButtonInSectionTermList: true
+
+  profileMode:
+    enabled: true
+    title: "grbtm" # optional default will be site title
+    subtitle: "Solution Architecture | Data Architecture | Data Engineering | Machine Learning | GenAI"
+    imageUrl: "images/pixelart_profile.png"
+    imageTitle: "Profile avatar" 
+    imageWidth: 120 
+    imageHeight: 120 
+
+    buttons:
+      - name: About me
+        url: "/about/"
+      - name: Services
+        url: "/services/"
+
+  socialIcons:
+    - name: github
+      title: Github profile
+      url: "https://github.com/grbtm/"
+    - name: linkedin
+      url: "https://linkedin.com/in/tomislav-grbe%C5%A1i%C4%87-388442328/"
+
+  footer:
+    hideCopyright: true  # Remove the copyright notice
+
+
+menu:
+  main:
+    - identifier: about
+      name: About
+      url: /about/
+      weight: 10    # Controls order in navigation (lower number = left side)
+    - identifier: blog
+      name: Blog
+      url: /posts/
+      weight: 20
+    - identifier: services
+      name: Services
+      url: /services/
+      weight: 30
+    - identifier: contact
+      name: Contact
+      url: /contact/
+      weight: 40
+
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON

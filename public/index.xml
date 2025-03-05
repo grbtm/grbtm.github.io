@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>grbtm&#39;s blog</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on grbtm&#39;s blog</description>
+    <generator>Hugo -- 0.144.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 28 Jan 2025 16:44:49 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Contact</title>
+      <link>http://localhost:1313/contact/</link>
+      <pubDate>Tue, 28 Jan 2025 16:44:49 +0100</pubDate>
+      <guid>http://localhost:1313/contact/</guid>
+      <description>&lt;p&gt;You can get in touch with me via email:&lt;/p&gt;
+&lt;p&gt;g r b t m @ p o s t e o . net&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Services</title>
+      <link>http://localhost:1313/services/</link>
+      <pubDate>Tue, 28 Jan 2025 16:43:40 +0100</pubDate>
+      <guid>http://localhost:1313/services/</guid>
+      <description>&lt;h2 id=&#34;-enterprise-data-platform--system-design&#34;&gt;🏗️ Enterprise Data Platform &amp;amp; System Design&lt;/h2&gt;
+&lt;p&gt;Offering comprehensive design and implementation services for modern data platforms and cloud solutions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key Benefits:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modern data architecture design using cloud-native solutions&lt;/li&gt;
+&lt;li&gt;Data lakehouse implementation with focus on scalability and governance&lt;/li&gt;
+&lt;li&gt;Multi-environment setups using Infrastructure as Code&lt;/li&gt;
+&lt;li&gt;Data platform migration and modernization strategies&lt;/li&gt;
+&lt;li&gt;High-availability system design&lt;/li&gt;
+&lt;li&gt;End-to-end system integration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Technologies:&lt;/strong&gt; &lt;code&gt;Terraform&lt;/code&gt;, &lt;code&gt;Azure DevOps&lt;/code&gt;, &lt;code&gt;Docker&lt;/code&gt;, &lt;code&gt;Kubernetes&lt;/code&gt;, &lt;code&gt;Jenkins&lt;/code&gt;&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-data-governance--security-solutions&#34;&gt;🔒 Data Governance &amp;amp; Security Solutions&lt;/h2&gt;
+&lt;p&gt;Helping organizations establish robust data governance frameworks and security solutions.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About Me</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Tue, 28 Jan 2025 15:27:29 +0100</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>about me</description>
+    </item>
+    <item>
+      <title>How to Set Up a Dev Environment on a MacBook Pro M1 in 2023</title>
+      <link>http://localhost:1313/posts/2023/m1-dev-setup/</link>
+      <pubDate>Fri, 09 Jun 2023 16:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/posts/2023/m1-dev-setup/</guid>
+      <description>&lt;p&gt;I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.&lt;/p&gt;
+&lt;h3 id=&#34;basic-security&#34;&gt;Basic security&lt;/h3&gt;
+&lt;p&gt;The section &amp;lsquo;The easy stuff&amp;rsquo; in Ricard Bejarano&amp;rsquo;s &lt;a href=&#34;https://www.bejarano.io/hardening-macos/&#34;&gt;&amp;lsquo;Hardening macOS&amp;rsquo; guide&lt;/a&gt; covers a few security basics for a new macOS machine (most importantly: disk encryption using &lt;code&gt;FileVault&lt;/code&gt;, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

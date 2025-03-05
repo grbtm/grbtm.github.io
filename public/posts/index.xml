@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on grbtm&#39;s blog</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on grbtm&#39;s blog</description>
+    <generator>Hugo -- 0.144.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Jun 2023 16:00:00 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Set Up a Dev Environment on a MacBook Pro M1 in 2023</title>
+      <link>http://localhost:1313/posts/2023/m1-dev-setup/</link>
+      <pubDate>Fri, 09 Jun 2023 16:00:00 +0100</pubDate>
+      <guid>http://localhost:1313/posts/2023/m1-dev-setup/</guid>
+      <description>&lt;p&gt;I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.&lt;/p&gt;
+&lt;h3 id=&#34;basic-security&#34;&gt;Basic security&lt;/h3&gt;
+&lt;p&gt;The section &amp;lsquo;The easy stuff&amp;rsquo; in Ricard Bejarano&amp;rsquo;s &lt;a href=&#34;https://www.bejarano.io/hardening-macos/&#34;&gt;&amp;lsquo;Hardening macOS&amp;rsquo; guide&lt;/a&gt; covers a few security basics for a new macOS machine (most importantly: disk encryption using &lt;code&gt;FileVault&lt;/code&gt;, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
