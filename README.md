@@ -1,5 +1,5 @@
 # grbtm's blog via GitHub Pages
-Underlying source code for [grbtm.github.io](grbtm.github.io). Powered by [Hugo](https://gohugo.io/) & [PaperMod](https://github.com/adityatelange/hugo-PaperMod/)
+Underlying source code for grbtm.github.io. Powered by [Hugo](https://gohugo.io/) & [PaperMod](https://github.com/adityatelange/hugo-PaperMod/)
 
 
 ## How to
