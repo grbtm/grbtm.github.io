@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>How to Set Up a Dev Environment on a MacBook Pro M1 in 2023 | grbtm&#39;s blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.
+Basic security
+The section &lsquo;The easy stuff&rsquo; in Ricard Bejarano&rsquo;s &lsquo;Hardening macOS&rsquo; guide covers a few security basics for a new macOS machine (most importantly: disk encryption using FileVault, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:">
+<meta name="author" content="">
+<link rel="canonical" href="https://grbtm.github.io/posts/2023/m1-dev-setup/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.d6fcd20a4fb86efa4dfac8ec95da60244cc8871042183da1ef28e3a762ad79c8.css" integrity="sha256-1vzSCk&#43;4bvpN&#43;sjsldpgJEzIhxBCGD2h7yjjp2Ktecg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://grbtm.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://grbtm.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://grbtm.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://grbtm.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://grbtm.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://grbtm.github.io/posts/2023/m1-dev-setup/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:url" content="https://grbtm.github.io/posts/2023/m1-dev-setup/">
+  <meta property="og:site_name" content="grbtm&#39;s blog">
+  <meta property="og:title" content="How to Set Up a Dev Environment on a MacBook Pro M1 in 2023">
+  <meta property="og:description" content="I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.
+Basic security The section ‘The easy stuff’ in Ricard Bejarano’s ‘Hardening macOS’ guide covers a few security basics for a new macOS machine (most importantly: disk encryption using FileVault, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2023-06-09T16:00:00+01:00">
+    <meta property="article:modified_time" content="2023-06-09T16:00:00+01:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="How to Set Up a Dev Environment on a MacBook Pro M1 in 2023">
+<meta name="twitter:description" content="I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.
+Basic security
+The section &lsquo;The easy stuff&rsquo; in Ricard Bejarano&rsquo;s &lsquo;Hardening macOS&rsquo; guide covers a few security basics for a new macOS machine (most importantly: disk encryption using FileVault, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://grbtm.github.io/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "How to Set Up a Dev Environment on a MacBook Pro M1 in 2023",
+      "item": "https://grbtm.github.io/posts/2023/m1-dev-setup/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "How to Set Up a Dev Environment on a MacBook Pro M1 in 2023",
+  "name": "How to Set Up a Dev Environment on a MacBook Pro M1 in 2023",
+  "description": "I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.\nBasic security The section \u0026lsquo;The easy stuff\u0026rsquo; in Ricard Bejarano\u0026rsquo;s \u0026lsquo;Hardening macOS\u0026rsquo; guide covers a few security basics for a new macOS machine (most importantly: disk encryption using FileVault, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.\nBasic security The section ‘The easy stuff’ in Ricard Bejarano’s ‘Hardening macOS’ guide covers a few security basics for a new macOS machine (most importantly: disk encryption using FileVault, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:\nPassword manager I use 1Password as my password manager across multiple devices. To set it up on a new macOS machine, download the installer from: https://1password.com/downloads/mac/. From here on you can use the setup QR code (from the emergency kit printout page) to get it up and running quickly.\nTime Machine Backups Make sure to setup backups via Time Machine. :)\nTerminal emulator and shell Download iTerm2 from: https://iterm2.com/ . In macOS Ventura zsh is the default shell, which we will keep. Additionally, install Oh My Zsh for convenient management of your zsh shell:\nsh -c \"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\" Text editor: Vim Vim is already pre-installed, works for me!\nSSH keys My understanding is that it’s considered best practice to generate new SSH keys for a new machine as opposed to copying the SSH keys from your old machine. This way the private SSH keys don’t have to leave the respective machine and are not flying around on old devices and being forgotten about. To generate a new key follow the prompts and make sure to enter a passphrase:\nssh-keygen -t ed25519 -C \"your_email@example.com\" For convenience I also recommend to use the ssh-agent to manage your keys securely so that you don’t have to type the passphrase everytime you use the keys: see Adding your SSH key to the ssh-agent\nHomebrew A great package manager for macOS:\n/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\" After the installation follow the suggested next steps to add Homebrew to your PATH.\nRosetta 2 An app that works in the background and enables you to run apps built for Intel Macs on an Apple silicon Mac (arm64). Many apps already support Apple silicon processors, but there’s still software out there (especially older versions of apps) that doesn’t run natively on Apple silicon. It’s also a recommendation to install Rosetta 2 before installing Docker Desktop. To install:\nsoftwareupdate --install-rosetta Note-taking: Obsidian Great note-taking app for plain text Markdown files:\nbrew install --cask obsidian Htop brew install htop tmux A great terminal multiplexer that let’s you run multiple terminal sessions in a single window (as well as detach and re-attach to sessions) :\nbrew install tmux Python Development IDE: VS Code To install VS Code download it from: https://code.visualstudio.com/Download After installing VS Code choose the Python extension via Extensions in the sidebar and search for ‘Python’ in the Marketplace. It will also ask you to install macOS Command Line Developer Tools if you haven’t done already.\nPyenv To manage multiple Python versions, install pyenv:\nbrew install pyenv Set up your shell environment for Pyenv:\necho 'export PYENV_ROOT=\"$HOME/.pyenv\"' \u003e\u003e ~/.zshrc echo 'command -v pyenv \u003e/dev/null || export PATH=\"$PYENV_ROOT/bin:$PATH\"' \u003e\u003e ~/.zshrc echo 'eval \"$(pyenv init -)\"' \u003e\u003e ~/.zshrc Install additional dependencies to be able to build Python, for my M1 Macbook Pro this was:\nbrew install xz (If this is not sufficient and you still encounter issues when building your first Python version as described below, check: https://github.com/pyenv/pyenv/wiki#suggested-build-environment )\nList all available versions and install for example Python 3.10.11:\npyenv install -l pyenv install 3.10.11 Docker Desktop Make sure you have Rosetta 2 installed, then download the image from https://docs.docker.com/desktop/install/mac-install/ and run:\nsudo hdiutil attach Docker.dmg sudo /Volumes/Docker/Docker.app/Contents/MacOS/install sudo hdiutil detach /Volumes/Docker (This default installation will perform privileged configurations once during the installation, for details see: https://docs.docker.com/desktop/mac/permission-requirements/#permission-requirements)\n",
+  "wordCount" : "622",
+  "inLanguage": "en",
+  "datePublished": "2023-06-09T16:00:00+01:00",
+  "dateModified": "2023-06-09T16:00:00+01:00",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://grbtm.github.io/posts/2023/m1-dev-setup/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "grbtm's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://grbtm.github.io/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://grbtm.github.io/" accesskey="h" title="grbtm&#39;s blog (Alt + H)">grbtm&#39;s blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://grbtm.github.io/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://grbtm.github.io/posts/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://grbtm.github.io/services/" title="Services">
+                    <span>Services</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://grbtm.github.io/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://grbtm.github.io/">Home</a>&nbsp;»&nbsp;<a href="https://grbtm.github.io/posts/">Posts</a></div>
+    <h1 class="post-title entry-hint-parent">
+      How to Set Up a Dev Environment on a MacBook Pro M1 in 2023
+    </h1>
+    <div class="post-meta"><span title='2023-06-09 16:00:00 +0100 +0100'>June 9, 2023</span>&nbsp;·&nbsp;3 min
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#basic-security" aria-label="Basic security">Basic security</a></li>
+                <li>
+                    <a href="#password-manager" aria-label="Password manager">Password manager</a></li>
+                <li>
+                    <a href="#time-machine-backups" aria-label="Time Machine Backups">Time Machine Backups</a></li>
+                <li>
+                    <a href="#terminal-emulator-and-shell" aria-label="Terminal emulator and shell">Terminal emulator and shell</a></li>
+                <li>
+                    <a href="#text-editor-vim" aria-label="Text editor: Vim">Text editor: Vim</a></li>
+                <li>
+                    <a href="#ssh-keys" aria-label="SSH keys">SSH keys</a></li>
+                <li>
+                    <a href="#homebrew" aria-label="Homebrew">Homebrew</a></li>
+                <li>
+                    <a href="#rosetta-2" aria-label="Rosetta 2">Rosetta 2</a></li>
+                <li>
+                    <a href="#note-taking-obsidian" aria-label="Note-taking: Obsidian">Note-taking: Obsidian</a></li>
+                <li>
+                    <a href="#htop" aria-label="Htop">Htop</a></li>
+                <li>
+                    <a href="#tmux" aria-label="tmux">tmux</a></li>
+                <li>
+                    <a href="#python-development" aria-label="Python Development">Python Development</a><ul>
+                        
+                <li>
+                    <a href="#ide-vs-code" aria-label="IDE: VS Code">IDE: VS Code</a></li>
+                <li>
+                    <a href="#pyenv" aria-label="Pyenv">Pyenv</a></li></ul>
+                </li>
+                <li>
+                    <a href="#docker-desktop" aria-label="Docker Desktop">Docker Desktop</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>I recently had to set up a new M1 MacBook Pro for development, so I wrote down the steps I took along the way.</p>
+<h3 id="basic-security">Basic security<a hidden class="anchor" aria-hidden="true" href="#basic-security">#</a></h3>
+<p>The section &lsquo;The easy stuff&rsquo; in Ricard Bejarano&rsquo;s <a href="https://www.bejarano.io/hardening-macos/">&lsquo;Hardening macOS&rsquo; guide</a> covers a few security basics for a new macOS machine (most importantly: disk encryption using <code>FileVault</code>, automatic security updates, lock screen after inactivity). The last recommendation in the section covers password managers. This is the approach I took:</p>
+<h3 id="password-manager">Password manager<a hidden class="anchor" aria-hidden="true" href="#password-manager">#</a></h3>
+<p>I use 1Password as my password manager across multiple devices. To set it up on a new macOS machine, download the installer from: <code>https://1password.com/downloads/mac/</code>. From here on you can use the setup QR code (from the emergency kit printout page) to get it up and running quickly.</p>
+<h3 id="time-machine-backups">Time Machine Backups<a hidden class="anchor" aria-hidden="true" href="#time-machine-backups">#</a></h3>
+<p>Make sure to setup backups via Time Machine. :)</p>
+<h3 id="terminal-emulator-and-shell">Terminal emulator and shell<a hidden class="anchor" aria-hidden="true" href="#terminal-emulator-and-shell">#</a></h3>
+<p>Download iTerm2 from: <a href="https://iterm2.com/">https://iterm2.com/</a> .
+In macOS Ventura <code>zsh</code> is the default shell, which we will keep.
+Additionally, install <code>Oh My Zsh</code> for convenient management of your zsh shell:</p>
+<pre tabindex="0"><code> sh -c &#34;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&#34;
+</code></pre><h3 id="text-editor-vim">Text editor: Vim<a hidden class="anchor" aria-hidden="true" href="#text-editor-vim">#</a></h3>
+<p>Vim is already pre-installed, works for me!</p>
+<h3 id="ssh-keys">SSH keys<a hidden class="anchor" aria-hidden="true" href="#ssh-keys">#</a></h3>
+<p>My understanding is that it&rsquo;s considered best practice to generate new SSH keys for a new machine as opposed to copying the  SSH keys from your old machine. This way the private SSH keys don&rsquo;t have to leave the respective machine and are not flying around on old devices and being forgotten about. <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key">To generate a new key</a> follow the prompts and make sure to enter a passphrase:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ssh-keygen -t ed25519 -C <span style="color:#e6db74">&#34;your_email@example.com&#34;</span>
+</span></span></code></pre></div><p>For convenience I also recommend to use the ssh-agent to manage your keys securely so that you don&rsquo;t have to type the passphrase everytime you use the keys: see <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent">Adding your SSH key to the ssh-agent</a></p>
+<h3 id="homebrew">Homebrew<a hidden class="anchor" aria-hidden="true" href="#homebrew">#</a></h3>
+<p>A great package manager for macOS:</p>
+<pre tabindex="0"><code>/bin/bash -c &#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&#34;
+</code></pre><p>After the installation follow the suggested next steps to add Homebrew to your PATH.</p>
+<h3 id="rosetta-2">Rosetta 2<a hidden class="anchor" aria-hidden="true" href="#rosetta-2">#</a></h3>
+<p>An app that works in the background and enables you to run apps built for Intel Macs  on an Apple silicon Mac (<code>arm64</code>). Many apps already support Apple silicon processors, but there&rsquo;s still software out there (especially older versions of apps) that doesn&rsquo;t run natively on Apple silicon. It&rsquo;s also a recommendation to install Rosetta 2 before installing Docker Desktop.
+To install:</p>
+<pre tabindex="0"><code>softwareupdate --install-rosetta
+</code></pre><h3 id="note-taking-obsidian">Note-taking: Obsidian<a hidden class="anchor" aria-hidden="true" href="#note-taking-obsidian">#</a></h3>
+<p>Great note-taking app for plain text Markdown files:</p>
+<pre tabindex="0"><code>brew install --cask obsidian
+</code></pre><h3 id="htop">Htop<a hidden class="anchor" aria-hidden="true" href="#htop">#</a></h3>
+<pre tabindex="0"><code>brew install htop
+</code></pre><h3 id="tmux">tmux<a hidden class="anchor" aria-hidden="true" href="#tmux">#</a></h3>
+<p>A great terminal multiplexer that let&rsquo;s you run multiple terminal sessions in a single window (as well as detach and re-attach to sessions) :</p>
+<pre tabindex="0"><code>brew install tmux
+</code></pre><h3 id="python-development">Python Development<a hidden class="anchor" aria-hidden="true" href="#python-development">#</a></h3>
+<h4 id="ide-vs-code">IDE: VS Code<a hidden class="anchor" aria-hidden="true" href="#ide-vs-code">#</a></h4>
+<p>To install VS Code download it from: <code>https://code.visualstudio.com/Download</code>
+After installing VS Code choose the Python extension via Extensions in the sidebar and search for &lsquo;Python&rsquo; in the Marketplace. It will also ask you to install macOS Command Line Developer Tools if you haven&rsquo;t done already.</p>
+<h4 id="pyenv">Pyenv<a hidden class="anchor" aria-hidden="true" href="#pyenv">#</a></h4>
+<p>To manage multiple Python versions, install <code>pyenv</code>:</p>
+<pre tabindex="0"><code>brew install pyenv
+</code></pre><p><a href="https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv">Set up your shell environment for Pyenv</a>:</p>
+<pre tabindex="0"><code>echo &#39;export PYENV_ROOT=&#34;$HOME/.pyenv&#34;&#39; &gt;&gt; ~/.zshrc
+echo &#39;command -v pyenv &gt;/dev/null || export PATH=&#34;$PYENV_ROOT/bin:$PATH&#34;&#39; &gt;&gt; ~/.zshrc
+echo &#39;eval &#34;$(pyenv init -)&#34;&#39; &gt;&gt; ~/.zshrc
+</code></pre><p>Install additional dependencies to be able to build Python, for my M1 Macbook Pro this was:</p>
+<pre tabindex="0"><code>brew install xz
+</code></pre><p>(If this is not sufficient and you still encounter issues when building your first Python version as described below, check: <a href="https://github.com/pyenv/pyenv/wiki#suggested-build-environment">https://github.com/pyenv/pyenv/wiki#suggested-build-environment</a> )</p>
+<p>List all available versions and install for example Python 3.10.11:</p>
+<pre tabindex="0"><code>pyenv install -l
+pyenv install 3.10.11
+</code></pre><h3 id="docker-desktop">Docker Desktop<a hidden class="anchor" aria-hidden="true" href="#docker-desktop">#</a></h3>
+<p>Make sure you have <code>Rosetta 2</code> installed, then download the image from <a href="https://docs.docker.com/desktop/install/mac-install/">https://docs.docker.com/desktop/install/mac-install/</a> and run:</p>
+<pre tabindex="0"><code>sudo hdiutil attach Docker.dmg
+sudo /Volumes/Docker/Docker.app/Contents/MacOS/install
+sudo hdiutil detach /Volumes/Docker
+</code></pre><p>(This default installation will perform privileged configurations once during the installation, for details see: <a href="https://docs.docker.com/desktop/mac/permission-requirements/#permission-requirements">https://docs.docker.com/desktop/mac/permission-requirements/#permission-requirements</a>)</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
