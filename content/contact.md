@@ -1,6 +1,5 @@
 ---
 date: '2025-01-28T16:44:49+01:00'
-draft: true
 title: 'Contact'
 hideMeta: true
 ---

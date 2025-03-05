@@ -1,6 +1,5 @@
 ---
 date: '2025-01-28T15:27:29+01:00'
-draft: true
 title: 'About Me'
 url: "/about/"
 summary: "about me"
